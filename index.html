@@ -74,9 +74,9 @@ https://cdnjs.cloudflare.com/ajax/libs/chartist/0.11.4/chartist.min.css">
                 veces <br />
               </li>
               <div class="content-right">
-                <a class="button"  onclick="calcularProbabilidad()" id="calular-probabilidad">
+                <button class="button"  type="submit" id="calular-probabilidad">
                   Calcular
-                </a>
+                </button>
               </div>
             </ul>
           </form>
@@ -94,7 +94,7 @@ https://cdnjs.cloudflare.com/ajax/libs/chartist/0.11.4/chartist.min.css">
         </article>
 
         <article
-          class="box center margin-bottom hidden results"
+          class="box center margin-bottom results"
           id="estadisticas"
         >
           <h4 class="header-tiitle">
@@ -119,7 +119,7 @@ https://cdnjs.cloudflare.com/ajax/libs/chartist/0.11.4/chartist.min.css">
         </article>
       </section>
       <section>
-        <article class="box hidden chart results">
+        <article class="box chart results" id="grafica">
           <h4 class="header-tiitle">Curva de contagio</h4>
           <label>Comparar curva con: </label>
           <input
@@ -127,7 +127,6 @@ https://cdnjs.cloudflare.com/ajax/libs/chartist/0.11.4/chartist.min.css">
             type="datalist"
             name="pais-comparacion"
             placeholder="Seleccione un país"
-            onchange="compararGraficas(this.value)"
           />
           <datalist id="datalist-paises"> </datalist>
           <div class="ct-chart ct-perfect-fourth chart"></div>

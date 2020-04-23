@@ -92,6 +92,10 @@ let calcularProbabilidad = function() {
     document.getElementById('mensaje').innerText = mensaje
     document.getElementById('estadisticas-resultados').innerHTML = estadisticas
 
+    document.getElementById('results').style.display = 'block'
+    document.getElementById('estadisticas').style.display = 'block'
+    document.getElementById('grafica').style.opacity = 1
+
 }
 
 let compararGraficas = function(country) {
@@ -106,7 +110,6 @@ let compararGraficas = function(country) {
             .then(myJson => {
                 let datosOtroPais = myJson
                 datosOtroPais = datosOtroPais.map(({ Cases }) => Cases).filter((Cases) => Cases > 0)
-                console.log(datosOtroPais)
                 dibujarGraficas(datosCoronavirus, datosOtroPais)
             })
             .catch(err => {
@@ -162,7 +165,6 @@ let dibujarGraficas = function(datosCoronavirus, datosOtroPais = []) {
         indice++;
     })
 
-
     datosOtroPais = datosOtroPais.slice(0, aumentoXdia.length)
 
 
@@ -181,3 +183,24 @@ let dibujarGraficas = function(datosCoronavirus, datosOtroPais = []) {
 
 
 }
+
+
+let agregarEventos = function(params) {
+
+    let departamento = document.querySelector('[name = "departamento"]')
+    departamento.addEventListener('click', () => departamento.value = '')
+
+
+    let pais = document.querySelector('[name = "pais-comparacion"]')
+    pais.addEventListener('click', () => pais.value = '')
+
+    pais.addEventListener('change', () => compararGraficas(pais.value))
+
+    let formulario = document.querySelector('#formularioProbabilidad')
+
+    formulario.addEventListener('submit', (event) => {
+        calcularProbabilidad()
+        event.preventDefault()
+    })
+}
+agregarEventos()
