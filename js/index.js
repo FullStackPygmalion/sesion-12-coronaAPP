@@ -28,9 +28,15 @@ let mostrarDatos = function(datosCoronavirus) {
     /*Lista de departamentos */
     let departamentos = datosCoronavirus.map(item => item.departamento);
     departamentos = departamentos.filter((item, indice) => departamentos.indexOf(item) === indice);
+    crearDatalist(departamentos, 'datalist-departamentos')
 
-    let contenedorDatalist = document.getElementById('datalist-departamentos')
-    departamentos.sort().forEach((elm) => {
+
+}
+
+let crearDatalist = (arreglo, ubicacion) => {
+
+    let contenedorDatalist = document.getElementById(ubicacion)
+    arreglo.sort().forEach((elm) => {
         opcion = document.createElement('option')
         opcion.value = elm
         contenedorDatalist.append(opcion)
@@ -79,9 +85,8 @@ let calcularProbabilidad = function() {
     if (contagio > 100) contagio = 100
     contagio = Math.floor(contagio)
 
-    let mensaje = `Señor ${persona.nombre} siga teniendo en cuentra las medidas propiestas por las organizaciones de salud `
-
-    let estadisticas = `<br><p>Los casos en su departamento son: <br><span class = "big-text-3">${casosDepartamento.length} <span></p>`
+    let mensaje = `Señor ${persona.nombre} siga teninedo en cuenta las medidas propuestas por las organizaciones de salud respecto a su aislamiento`
+    let estadisticas = `<br><p>Casos en su departamento:<p> <span class="big-text-3">${casosDepartamento.length}</span>`
 
     document.getElementById('probabilidad').innerText = contagio + '%'
     document.getElementById('mensaje').innerText = mensaje
@@ -89,8 +94,54 @@ let calcularProbabilidad = function() {
 
 }
 
+let compararGraficas = function(country) {
 
-let dibujarGraficas = function(datosCoronavirus) {
+    if (country !== '') {
+        fetch("https://api.covid19api.com/total/country/" + country + "/status/confirmed?from=2020-03-01T00:00:00Z&to=2020-07-01T00:00:00Z", {
+                method: "GET"
+            })
+            .then(respuesta => {
+                return respuesta.json();
+            })
+            .then(myJson => {
+                let datosOtroPais = myJson
+                datosOtroPais = datosOtroPais.map(({ Cases }) => Cases).filter((Cases) => Cases > 0)
+                console.log(datosOtroPais)
+                dibujarGraficas(datosCoronavirus, datosOtroPais)
+            })
+            .catch(err => {
+                console.log(err);
+            });
+
+
+    }
+
+}
+
+
+let cargarPaises = function() {
+    fetch("https://api.covid19api.com/countries", {
+            method: "GET"
+        })
+        .then(respuesta => {
+            return respuesta.json();
+        })
+        .then(myJson => {
+            let paises = myJson.map(({ Country }) => Country)
+            crearDatalist(paises, 'datalist-paises')
+
+        })
+        .catch(err => {
+            console.log(err);
+        });
+
+}
+
+cargarPaises()
+
+
+
+let dibujarGraficas = function(datosCoronavirus, datosOtroPais = []) {
 
     let fechasContagio = datosCoronavirus.map(({ fecha_diagnostico }) => fecha_diagnostico)
 
@@ -98,7 +149,6 @@ let dibujarGraficas = function(datosCoronavirus) {
     let indice = 0,
         dia = 0,
         contagios = 0
-
 
     fechasContagio.forEach(fecha => {
         if (fechasContagio.indexOf(fecha) == indice) {
@@ -112,15 +162,15 @@ let dibujarGraficas = function(datosCoronavirus) {
         indice++;
     })
 
-    console.log(aumentoXdia)
 
+    datosOtroPais = datosOtroPais.slice(0, aumentoXdia.length)
 
 
     new Chartist.Line('.ct-chart', {
-        labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        labels: ['Dias'],
         series: [
-            aumentoXdia
-
+            aumentoXdia,
+            datosOtroPais
         ]
     }, {
         fullWidth: true,
