@@ -156,9 +156,9 @@ main {
     justify-content: flex-end;
 }
 
-.chart {
+/* .chart {
     width: 100%;
-}
+} */
 
 .ct-series-a,
 .ct-series-a .ct-line,
@@ -313,74 +313,78 @@ border-right: 2px solid gray; */
     box-shadow: none;
 }
 
-.hidden {
+
+ .hidden {
     display: none;
 }
 
 #results {
     display: none;
-    width: 20vw;
+    /* width: 20vw;  */
 }
 
-#estadisticas {
-  display: none;
+.results{
+    width: 36vw;
 }
+
+ #estadisticas {
+   opacity: 0;
+ }
 
 #grafica {
     opacity: 0;
-    max-width: 40vw;
-}
-
+} 
 #estadisticas {
     flex-shrink: 30vw;
 }
-
 .vertical {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 }
-
 .verticalEnd {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 }
-
 .topnav .icon {
     display: none;
 }
-
 @media screen and (max-width: 1200px) {
     .horizontal {
         display: flex;
         flex-wrap: wrap;
     }
 }
-
 @media screen and (max-width: 800px) {
     main {
         margin: 1em 0em;
     }
+    
     .topnav a:not(:first-child) {
         display: none;
     }
+    
     .topnav a.icon {
         float: right;
         display: block;
     }
+    
     .question label {
         display: block;
         margin-bottom: 0.2em;
     }
+    
     .results {
         min-width: 98%;
     }
+    
     #results {
         justify-self: stretch;
         display: none;
         width: 60vw;
     }
+    
     .horizontal {
         display: flex;
         flex-wrap: wrap;

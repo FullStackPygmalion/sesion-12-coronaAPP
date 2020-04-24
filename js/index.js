@@ -1,21 +1,16 @@
 let datosCoronavirus;
 
-fetch("https://www.datos.gov.co/resource/gt2j-8ykr.json?$limit=5000", {
-        method: "GET"
-    })
-    .then(respuesta => {
-        return respuesta.json();
-    })
-    .then(myJson => {
-        datosCoronavirus = myJson;
-        mostrarDatos(myJson);
-        dibujarGraficas(myJson)
-    })
-    .catch(err => {
-        console.log(err);
-    });
 
-let mostrarDatos = function(datosCoronavirus) {
+const peticionAPI = async function() {
+    const response = await fetch('https://www.datos.gov.co/resource/gt2j-8ykr.json?$limit=5000');
+    const json = await response.json();
+    datosCoronavirus = json;
+    mostrarDatos(json);
+    dibujarGraficas(json)
+}
+
+
+const mostrarDatos = function(datosCoronavirus) {
 
     /* Mostrart datos de coronavirus en colombia */
     document.getElementById('total').append(datosCoronavirus.length)
@@ -33,7 +28,7 @@ let mostrarDatos = function(datosCoronavirus) {
 
 }
 
-let crearDatalist = (arreglo, ubicacion) => {
+const crearDatalist = (arreglo, ubicacion) => {
 
     let contenedorDatalist = document.getElementById(ubicacion)
     arreglo.sort().forEach((elm) => {
@@ -45,7 +40,7 @@ let crearDatalist = (arreglo, ubicacion) => {
 }
 
 
-let calcularProbabilidad = function() {
+const calcularProbabilidad = function() {
 
     let persona = {}
 
@@ -93,12 +88,12 @@ let calcularProbabilidad = function() {
     document.getElementById('estadisticas-resultados').innerHTML = estadisticas
 
     document.getElementById('results').style.display = 'block'
-    document.getElementById('estadisticas').style.display = 'block'
+    document.getElementById('estadisticas').style.opacity = 1
     document.getElementById('grafica').style.opacity = 1
 
 }
 
-let compararGraficas = function(country) {
+const compararGraficas = function(country) {
 
     if (country !== '') {
         fetch("https://api.covid19api.com/total/country/" + country + "/status/confirmed?from=2020-03-01T00:00:00Z&to=2020-07-01T00:00:00Z", {
@@ -122,7 +117,7 @@ let compararGraficas = function(country) {
 }
 
 
-let cargarPaises = function() {
+const cargarPaises = function() {
     fetch("https://api.covid19api.com/countries", {
             method: "GET"
         })
@@ -143,8 +138,7 @@ let cargarPaises = function() {
 cargarPaises()
 
 
-
-let dibujarGraficas = function(datosCoronavirus, datosOtroPais = []) {
+const dibujarGraficas = function(datosCoronavirus, datosOtroPais = []) {
 
     let fechasContagio = datosCoronavirus.map(({ fecha_diagnostico }) => fecha_diagnostico)
 
@@ -167,9 +161,18 @@ let dibujarGraficas = function(datosCoronavirus, datosOtroPais = []) {
 
     datosOtroPais = datosOtroPais.slice(0, aumentoXdia.length)
 
+    dias = [...Array(aumentoXdia.length).keys()]
+
+
+
+    /* Reducir resolucion de grafica */
+    datosOtroPais = datosOtroPais.filter((elm, index) => index % 3 == 0)
+    aumentoXdia = aumentoXdia.filter((elm, index) => index % 3 == 0)
+    dias = dias.filter((elm, index) => index % 3 == 0)
+
 
     new Chartist.Line('.ct-chart', {
-        labels: ['Dias'],
+        labels: dias,
         series: [
             aumentoXdia,
             datosOtroPais
@@ -185,7 +188,7 @@ let dibujarGraficas = function(datosCoronavirus, datosOtroPais = []) {
 }
 
 
-let agregarEventos = function(params) {
+const agregarEventos = function(params) {
 
     let departamento = document.querySelector('[name = "departamento"]')
     departamento.addEventListener('click', () => departamento.value = '')
@@ -203,4 +206,6 @@ let agregarEventos = function(params) {
         event.preventDefault()
     })
 }
+
+peticionAPI()
 agregarEventos()
